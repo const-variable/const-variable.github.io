@@ -5,20 +5,12 @@ import './App.css';
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+     <h3>Hi, I'm Maulik</h3>
+     <p>I am 21 year old Software Developer. Currently working at <a href="https://wwww.gridle.io">Gridle.io</a>.<br/> 
+        I can Design and code webpages. I also have interest in MTB cycling and designing mininal artwork.If would be not a Software Developer, I'd be a Architect or a Graphic Designer or something related to design (You get the point). 
+     </p>
+    
+    <h4>Work in Progress... check back later :)</h4>
     </div>
   );
 }
