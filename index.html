@@ -17,7 +17,12 @@
 
 <div class="grain"></div>
 <div class="rail"><i id="rail"></i></div>
-<div class="cur" id="cur"></div>
+<div class="cur" id="cur">
+  <svg viewBox="0 0 64 64" aria-hidden="true">
+    <circle cx="32" cy="32" r="23"/>
+    <path d="M32 4v12M32 48v12M4 32h12M48 32h12"/>
+  </svg>
+</div>
 
 <div class="hud">
   <a class="hud-tl mark" href="#top">MAULIK CHAUDHARY. <span>PORTFOLIO/2026</span></a>
@@ -41,13 +46,14 @@
   <!-- HERO -->
   <header class="hero" id="intro">
     <div class="hero-media" id="heroMedia">
-      <img src="/static/img/hero.jpg" alt="Maulik Chaudhary looking up beneath a canopy of forest trees">
+      <img id="heroImg" src="/static/img/hero.jpg" alt="Maulik Chaudhary looking up beneath a canopy of forest trees" crossorigin="anonymous">
+      <canvas id="heroCanvas" class="hero-canvas" aria-hidden="true"></canvas>
     </div>
     <div class="hero-inner">
       <p class="eyebrow">Software engineer &amp; AI/DS grad student — building for the web since 2019</p>
-      <h1 class="name">
-        <span class="ln"><span>MAULIK</span></span>
-        <span class="ln"><span>CHAUDHARY<em>.</em></span></span>
+      <h1 class="name" id="heroName" aria-label="const_variable">
+        <span class="ln" aria-hidden="true"><span class="ty"></span><span class="caret" id="caret"></span></span>
+        <span class="ln" aria-hidden="true"><span class="ty"></span></span>
       </h1>
       <div class="hero-meta">
         <span>Pursuing PGP, AI &amp; Data Science — Jio Institute</span>
@@ -55,7 +61,7 @@
         <span>Based in India</span>
       </div>
     </div>
-    <div class="scroll-cue">▼ SCROLL</div>
+    <div class="scroll-cue"><svg class="ico-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg> SCROLL</div>
   </header>
 
   <!-- MARQUEE -->
@@ -86,7 +92,7 @@
         <div class="item"><span>Senior Software Engineer</span><b>Tekion Corp, 2020—2024</b></div>
         <div class="item"><span>Software Engineer</span><b>ClientJoy, 2019</b></div>
         <div class="item"><span>B.Tech, ICT</span><b>DAIICT, 2019</b></div>
-        <a class="item" href="#resume"><span>Full résumé</span><b>View ↓</b></a>
+        <a class="item" href="#resume"><span>Full résumé</span><b>View <svg class="ico-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></b></a>
       </div>
     </div>
   </section>
@@ -101,7 +107,7 @@
 
     <a class="resume-download rv" href="/static/resume/Maulik_Chaudhary_Resume.pdf" download>
       <span>Download full résumé</span>
-      <small>PDF ↗</small>
+      <small>PDF <svg class="ico-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M17 7H9M17 7V15"/></svg></small>
     </a>
 
     <div class="resume-grid">
@@ -208,9 +214,9 @@
     </div>
     <div class="contact-grid">
       <div class="rv">
-        <a class="big-link" href="mailto:maulikchaudhary5@gmail.com"><span>Email</span><small>maulikchaudhary5@gmail.com ↗</small></a>
-        <a class="big-link" href="https://www.linkedin.com/in/maulik-chaudhary-2b0017112" target="_blank" rel="noopener"><span>LinkedIn</span><small>/in/maulik-chaudhary-2b0017112 ↗</small></a>
-        <a class="big-link" href="https://github.com/const-variable" target="_blank" rel="noopener"><span>GitHub</span><small>@const-variable ↗</small></a>
+        <a class="big-link" href="mailto:maulikchaudhary5@gmail.com"><span>Email</span><small>maulikchaudhary5@gmail.com <svg class="ico-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M17 7H9M17 7V15"/></svg></small></a>
+        <a class="big-link" href="https://www.linkedin.com/in/maulik-chaudhary-2b0017112" target="_blank" rel="noopener"><span>LinkedIn</span><small>/in/maulik-chaudhary-2b0017112 <svg class="ico-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M17 7H9M17 7V15"/></svg></small></a>
+        <a class="big-link" href="https://github.com/const-variable" target="_blank" rel="noopener"><span>GitHub</span><small>@const-variable <svg class="ico-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M17 7H9M17 7V15"/></svg></small></a>
       </div>
       <form class="rv" id="form">
         <div class="field"><label for="n">Name</label><input id="n" placeholder="Who's writing"></div>
@@ -224,7 +230,7 @@
 
 <footer>
   <span>© 2026 Maulik Chaudhary</span>
-  <a href="#top">Back to top ↑</a>
+  <a href="#top">Back to top <svg class="ico-chevron ico-up" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></a>
 </footer>
 
 <script src="/static/js/portfolio.js"></script>
