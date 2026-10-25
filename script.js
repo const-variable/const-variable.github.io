@@ -251,10 +251,23 @@
     timeNote.setAttribute('role', 'button');
     timeNote.tabIndex = 0;
     timeNote.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); timeNote.click(); } });
+    // Tap: the line flips over like a card and comes back with a new one.
+    let flipping = false;
     timeNote.addEventListener('click', () => {
-      render(true);
-      timeText.classList.remove('note-change');
-      requestAnimationFrame(() => timeText.classList.add('note-change'));
+      if (!motionOn()) { render(true); return; }
+      if (flipping) return;
+      flipping = true;
+      timeNote.classList.remove('is-spinning');
+      void timeNote.offsetWidth;
+      timeNote.classList.add('is-spinning');
+      timeText.classList.remove('flip-in');
+      timeText.classList.add('flip-out');
+      setTimeout(() => {
+        render(true);
+        timeText.classList.remove('flip-out');
+        timeText.classList.add('flip-in');
+        setTimeout(() => { timeText.classList.remove('flip-in'); flipping = false; }, 260);
+      }, 230);
     });
   }
 

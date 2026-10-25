@@ -320,3 +320,14 @@ html[data-motion=off] .sidebar{transition:none}
 }
 @media(max-width:760px){.to-top{left:auto;right:calc(16px + env(safe-area-inset-right,0px))}}
 @media(max-width:760px){footer>a[href="#top"]{display:none}}
+
+/* ───────── v9: project titles at 22px; flipping time line ───────── */
+.project-name{font-size:22px}
+.now-note .local-time{perspective:600px}
+.local-time-text{display:inline-block;transform-origin:50% 50%;backface-visibility:hidden}
+.local-time-text.flip-out{animation:flip-out .23s cubic-bezier(.5,0,.75,0) forwards}
+.local-time-text.flip-in{animation:flip-in .26s cubic-bezier(.25,1,.5,1)}
+@keyframes flip-out{from{transform:rotateX(0);opacity:1}to{transform:rotateX(90deg);opacity:.2}}
+@keyframes flip-in{from{transform:rotateX(-90deg);opacity:.2}to{transform:rotateX(0);opacity:1}}
+.local-time.is-spinning .clock-doodle{animation:clock-spin .5s cubic-bezier(.3,.7,.3,1)}
+@keyframes clock-spin{to{transform:rotate(360deg)}}
