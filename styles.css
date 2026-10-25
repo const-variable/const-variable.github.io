@@ -362,3 +362,51 @@ html[data-motion=off] .sidebar{transition:none}
 html[data-motion=off] .social-icon:hover{transform:none}
 /* Brand icons are filled shapes, not line drawings. */
 .social-icon svg.svg-inline--fa,.social-icon .fa-brands{width:18px;height:18px;fill:currentColor;stroke:none;font-size:18px}
+
+/* ───────── v13: audit fixes ───────── */
+/* 1. Short laptop screens: the sidebar compacts so the toggles stay on screen. */
+@media(min-width:761px) and (max-height:780px){
+  .sidebar{padding-top:32px;padding-bottom:20px}
+  .profile{margin-top:26px}
+  .sidebar .avatar-button{width:118px;height:122px;margin-bottom:14px}
+  .navigation{margin-top:18px;gap:2px}
+  .navigation a{min-height:30px}
+  .sidebar-bottom{padding-top:16px}
+  .preferences{margin-top:8px}
+}
+/* 4. An open project card is highlighted everywhere, not only on phones. */
+.recent-project[open]{border-color:var(--accent)}
+/* 5. Theme button shows a sun in light mode and a moon in dark mode. */
+.moon-icon{display:none}
+.icon-button svg.moon-icon{fill:none;stroke:currentColor;stroke-width:1.5;stroke-linejoin:round}
+:root[data-theme=dark] .theme-toggle .sun-icon{display:none}
+:root[data-theme=dark] .theme-toggle .moon-icon{display:block}
+@media(min-width:761px) and (max-height:620px){.profile-description{display:none}.sidebar .avatar-button{width:96px;height:100px}}
+
+/* ───────── v14: phones read left to right again ───────── */
+@media(max-width:760px){
+  main{text-align:left}
+  .section-lead{margin-left:0;margin-right:0}
+  .recent-project summary{align-items:flex-start}
+  .project-meta{justify-content:flex-start}
+  .work-item summary{flex-direction:row;justify-content:flex-start;gap:13px;padding:20px 0}
+  .work-title{align-items:flex-start}
+  .work-item summary .expand-icon{margin-left:5px}
+  .work-detail{padding:0 5px 23px 52px}
+  .resume-link{justify-content:flex-start}
+  .journey>div{align-items:flex-start;padding-left:0;padding-right:10px}
+  .journey-dot,.journey-break .journey-dot{left:0;margin-left:0}
+  .off-duty-header{justify-content:flex-start;gap:25px}
+  .interest-buttons{justify-content:flex-start}
+  .interest-row{flex-direction:row;gap:14px}
+  .notebook-placeholder{flex-direction:row;text-align:left}
+  .email-row,.social-links{justify-content:flex-start}
+  .contact-section .copy-status{text-align:left}
+  footer{flex-direction:row;justify-content:space-between;align-items:center;gap:8px;padding-bottom:40px}
+}
+/* Touch screens can't hover, so the social icons carry a small caption instead. */
+@media(hover:none){
+  .social-links{margin-bottom:22px}
+  .social-icon::after,.social-icon:hover::after{opacity:1;top:calc(100% + 6px);bottom:auto;transform:translateX(-50%);background:none;border:0;padding:0;border-radius:0;font:9px/1 var(--mono);letter-spacing:.3px;color:var(--muted)}
+}
+main > section[tabindex="-1"]:focus{outline:none}

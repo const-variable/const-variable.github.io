@@ -62,6 +62,8 @@
       if (!navigator.clipboard) throw new Error('Clipboard unavailable');
       await navigator.clipboard.writeText(email);
       status.textContent = 'Copied. See you in the inbox!';
+      clearTimeout(status.clearTimer);
+      status.clearTimer = setTimeout(() => { status.textContent = ''; }, 3500);
     } catch {
       status.textContent = 'Copy isn’t available here. Select the email address above, or click it to say hello.';
     }
@@ -149,50 +151,83 @@
     document.querySelectorAll('.section-heading').forEach(el => el.classList.add('draw-ready'));
   }
 
-  /* Local time: Maulik's clock in India, the visitor's own clock when it differs,
-     and a mood line for the time of day. Updates on the minute; click to shuffle. */
+  /* Local time: the line leads with the visitor's time when it differs from India,
+     the tiny clock always shows India time. Updates on the minute; tap to flip. */
   const timeNote = document.querySelector('.local-time');
   const timeText = document.querySelector('.local-time-text');
   const hourHand = document.querySelector('.clock-hand.hour');
   const minuteHand = document.querySelector('.clock-hand.minute');
   const HOME = 'Asia/Kolkata';
+  // Mood lines for the time of day in India, with a separate set for weekends.
   const moods = {
-    dawn: [
-      'early start. Chai first, questions later.',
-      'the sun’s up, and so am I. Technically.',
-      'morning walk, thinking in browser tabs.',
-    ],
-    morning: [
-      'probably in class, nodding along to eigenvectors.',
-      'fresh coffee, fresh bugs.',
-      'deep in a Jupyter notebook, somewhere around cell 47.',
-    ],
-    noon: [
-      'lunch. Possibly dal-tadka. Definitely more ghee than necessary.',
-      'midday, running on rice and optimism.',
-      'refuelling. The model can train without me for an hour.',
-    ],
-    afternoon: [
-      'post-lunch, mid-experiment.',
-      'fighting the afternoon slump with a second chai.',
-      'watching a loss curve like it’s the last over of a cricket match.',
-    ],
-    evening: [
-      'golden hour, so likely on the Trek chasing a sunset.',
-      'classes wrapping up, side projects opening.',
-      'evening walk. The best ideas show up without a laptop.',
-    ],
-    night: [
-      'side-project hours.',
-      'cooking chhole and debugging code, not necessarily in that order.',
-      'dark mode on, in the editor and in the sky.',
-    ],
-    late: [
-      'probably still debugging something. Or should be asleep.',
-      'one more cell, then sleep. Probably.',
-      'the house is quiet. The terminal isn’t.',
-      'asking the big questions. The small ones are in the error log.',
-    ],
+    weekday: {
+      dawn: [
+        'early start. Chai first, questions later.',
+        'up early, pretending it was the plan all along.',
+        'morning walk, thinking in browser tabs.',
+      ],
+      morning: [
+        'probably in class, nodding along to eigenvectors.',
+        'fresh coffee, fresh bugs.',
+        'deep in a Jupyter notebook, somewhere around cell 47.',
+      ],
+      noon: [
+        'lunch break. The model can train without me for an hour.',
+        'midday, running on rice and optimism.',
+        'canteen queue, mentally debugging this morning’s code.',
+      ],
+      afternoon: [
+        'post-lunch, mid-experiment.',
+        'fighting the afternoon slump with a second chai.',
+        'watching a loss curve like it’s the last over of a cricket match.',
+      ],
+      evening: [
+        'classes wrapping up, side projects opening.',
+        'evening walk. The best ideas show up without a laptop.',
+        'chai, a short walk, then back to the assignment.',
+      ],
+      night: [
+        'side-project hours.',
+        'cooking dinner and debugging code, not necessarily in that order.',
+        'dark mode on, in the editor and in the sky.',
+      ],
+      late: [
+        'probably still debugging something. Or should be asleep.',
+        'one more cell, then sleep. Probably.',
+        'the house is quiet. The terminal isn’t.',
+        'asking the big questions. The small ones are in the error log.',
+      ],
+    },
+    weekend: {
+      dawn: [
+        'it’s the weekend, but the alarm didn’t get the memo.',
+        'quiet weekend morning. Good light for photos.',
+      ],
+      morning: [
+        'no class today. Slow breakfast, long reading list.',
+        'weekend morning, probably out on the bicycle before it gets hot.',
+      ],
+      noon: [
+        'weekend lunch: dal-tadka, rice and zero deadlines.',
+        'cooking something that takes too long and is worth it.',
+      ],
+      afternoon: [
+        'weekend afternoon. Nap or notebook, still deciding.',
+        'catching up on lectures I promised to rewatch.',
+      ],
+      evening: [
+        'out exploring a corner of the city I haven’t seen yet.',
+        'evening walk, camera in pocket.',
+      ],
+      night: [
+        'weekend side project. The fun kind, with no deadline.',
+        'chhole and rice for dinner. The weekend tradition holds.',
+      ],
+      late: [
+        'it’s the weekend, so bedtime is negotiable.',
+        'one more episode, one more cell. Then sleep. Probably.',
+      ],
+    },
   };
   const visitorNotes = {
     late: ['You’re up late too, I see.', 'Night owls, both of us.'],
@@ -206,12 +241,11 @@
   const period = h => h < 5 ? 'late' : h < 8 ? 'dawn' : h < 12 ? 'morning' : h < 14 ? 'noon' : h < 17 ? 'afternoon' : h < 20 ? 'evening' : h < 23 ? 'night' : 'late';
   const pick = list => list[Math.floor(Math.random() * list.length)];
   const clockIn = (zone, now) => {
-    const parts = Object.fromEntries(new Intl.DateTimeFormat('en-GB', {timeZone: zone, hour: 'numeric', minute: 'numeric', hourCycle: 'h23'}).formatToParts(now).map(p => [p.type, p.value]));
-    return {h: Number(parts.hour), m: Number(parts.minute), label: now.toLocaleTimeString('en-US', {timeZone: zone, hour: 'numeric', minute: '2-digit'}).toLowerCase()};
+    const parts = Object.fromEntries(new Intl.DateTimeFormat('en-GB', {timeZone: zone, weekday: 'short', hour: 'numeric', minute: 'numeric', hourCycle: 'h23'}).formatToParts(now).map(p => [p.type, p.value]));
+    return {h: Number(parts.hour) % 24, m: Number(parts.minute), weekend: parts.weekday === 'Sat' || parts.weekday === 'Sun', label: now.toLocaleTimeString('en-US', {timeZone: zone, hour: 'numeric', minute: '2-digit'}).toLowerCase()};
   };
   let visitorZone = '';
   try { visitorZone = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch { /* unknown zone */ }
-  const place = zone => zone.split('/').pop().replace(/_/g, ' ');
   const hand = (len, deg) => {
     const r = (deg - 90) * Math.PI / 180;
     return `M10 10L${(10 + Math.cos(r) * len).toFixed(2)} ${(10 + Math.sin(r) * len).toFixed(2)}`;
@@ -222,10 +256,12 @@
     const now = new Date();
     const home = clockIn(HOME, now);
     const homePeriod = period(home.h);
-    if (shuffle || homePeriod !== lastPeriod) {
-      const options = moods[homePeriod].filter(line => line !== mood);
-      mood = pick(options.length ? options : moods[homePeriod]);
-      lastPeriod = homePeriod;
+    const set = moods[home.weekend ? 'weekend' : 'weekday'][homePeriod];
+    const key = (home.weekend ? 'weekend-' : '') + homePeriod;
+    if (shuffle || key !== lastPeriod) {
+      const options = set.filter(line => line !== mood);
+      mood = pick(options.length ? options : set);
+      lastPeriod = key;
     }
     let line;
     const esc = text => text.replace(/[&<>]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;'}[c]));
@@ -235,7 +271,7 @@
       line = `It’s ${blink(home.label)} here in India: ${esc(mood)}`;
     } else {
       if (shuffle || !note) note = pick(visitorNotes[period(away.h)]);
-      line = `It’s ${blink(away.label)} in ${esc(place(visitorZone))} and ${blink(home.label)} here in India: ${esc(mood)} ${esc(note)}`;
+      line = `It’s ${blink(away.label)} where you are, but ${blink(home.label)} here in India: ${esc(mood)} ${esc(note)}`;
     }
     timeText.innerHTML = line;
     hourHand.setAttribute('d', hand(3.8, (home.h % 12) * 30 + home.m / 2));
@@ -404,6 +440,25 @@
       if (mark) mark.focus({preventScroll: true});
     });
     onScroll();
+    // In-page links on phones: when the jump goes up the header will be showing,
+    // so leave room for it; when it goes down the header tucks away straight off.
+    document.addEventListener('click', event => {
+      const link = event.target.closest && event.target.closest('a[href^="#"]');
+      if (!phone.matches || !link || link.classList.contains('to-top') || link.classList.contains('skip-link')) return;
+      const target = link.hash.length > 1 && document.getElementById(link.hash.slice(1));
+      if (!target) return;
+      event.preventDefault();
+      const top = target.getBoundingClientRect().top + window.scrollY;
+      const goingUp = top < window.scrollY;
+      let offset = 16;
+      if (goingUp || top < 80) { showHeader(); offset = header.offsetHeight + 16; }
+      else { clearTimeout(hideTimer); hideTimer = 0; header.classList.add('is-tucked'); }
+      window.scrollTo({top: Math.max(0, top - offset), behavior: motionOn() ? 'smooth' : 'auto'});
+      try { history.replaceState(null, '', link.hash); } catch { /* sandboxed preview */ }
+      // Move focus to the section so the header (which stays put while it holds focus) can tuck away.
+      if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+      target.focus({preventScroll: true});
+    });
   }
 
   try {
