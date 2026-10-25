@@ -331,3 +331,13 @@ html[data-motion=off] .sidebar{transition:none}
 @keyframes flip-in{from{transform:rotateX(-90deg);opacity:.2}to{transform:rotateX(0);opacity:1}}
 .local-time.is-spinning .clock-doodle{animation:clock-spin .5s cubic-bezier(.3,.7,.3,1)}
 @keyframes clock-spin{to{transform:rotate(360deg)}}
+
+/* ───────── v10: tidy small icons; responsive project titles ───────── */
+/* The clock sits in the bullet's column, its text lines up with the note. */
+.now-note,.hero .now-note{gap:13px}
+.now-note .local-time,.hero .now-note .local-time{display:grid;grid-template-columns:16px minmax(0,1fr);column-gap:8px;align-items:start;margin-left:-24px;max-width:none;text-align:left}
+.now-note .local-time .clock-doodle{display:block;margin:2px 0 0;vertical-align:baseline}
+.local-time-text{display:block}
+/* Arrows stay attached to the words they belong to. */
+.now-note a,.quiet-link,.text-link,.social-links a,.resume-link,.email-row>a{white-space:nowrap}
+.project-name{font-size:clamp(18px,5vw,20px)}
