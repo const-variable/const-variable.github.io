@@ -360,3 +360,5 @@ html[data-motion=off] .sidebar{transition:none}
   .social-icon:active{transform:scale(.94);border-color:var(--accent)}
 }
 html[data-motion=off] .social-icon:hover{transform:none}
+/* Brand icons are filled shapes, not line drawings. */
+.social-icon svg.svg-inline--fa,.social-icon .fa-brands{width:18px;height:18px;fill:currentColor;stroke:none;font-size:18px}
