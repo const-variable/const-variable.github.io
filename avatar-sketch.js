@@ -6,7 +6,8 @@
   const root = document.documentElement;
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const controllers = [];
-  const motionAllowed = () => !reducedMotion.matches && root.dataset.motion !== 'off';
+  // The portrait draws itself in Full motion only; in Reduced motion it simply fades in.
+  const motionAllowed = () => root.dataset.motion === 'full';
   function mount() {
     document.querySelectorAll('.avatar-button').forEach(button => {
       const fallback = button.querySelector('img.avatar');
@@ -68,7 +69,7 @@
       play(1600);
     });
   }
-  // Turning motion off reveals every remaining stroke immediately. Turning it
+  // Switching to reduced motion reveals every remaining stroke immediately. Switching
   // back on does not unexpectedly redraw the page; the avatar can be clicked.
   const respectMotion = () => { if (!motionAllowed()) controllers.forEach(controller => controller.finish()); };
   new MutationObserver(respectMotion).observe(root, {attributes:true, attributeFilter:['data-motion']});

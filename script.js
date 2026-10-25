@@ -14,21 +14,25 @@
     themeLabel.textContent = value === 'dark' ? 'Lights off' : 'Lights on';
     document.querySelector('meta[name="theme-color"]').content = value === 'dark' ? '#20221f' : '#faf9f6';
   };
+  // Two motion modes. The system's reduced-motion setting picks the default;
+  // visitors can switch either way. Older saved values ('on'/'off') still work.
+  const normaliseMotion = value => value === 'on' ? 'full' : value === 'off' ? 'reduced' : value;
   const applyMotion = value => {
-    const off = value === 'off' || motionMedia.matches;
-    root.dataset.motion = off ? 'off' : 'on';
-    motionButton.textContent = off ? 'Motion off' : 'Motion on';
-    motionButton.setAttribute('aria-pressed', String(off));
-    motionButton.disabled = motionMedia.matches;
-    motionButton.setAttribute('aria-label', motionMedia.matches ? 'Animations paused to respect your system’s reduced-motion preference' : (off ? 'Enable decorative animations' : 'Pause decorative animations'));
-    motionButton.title = motionMedia.matches ? 'Reduced motion follows your system preference' : 'Toggle decorative animations';
+    const mode = value === 'reduced' ? 'reduced' : 'full';
+    root.dataset.motion = mode;
+    motionButton.textContent = mode === 'full' ? 'Full motion' : 'Reduced motion';
+    motionButton.setAttribute('aria-pressed', String(mode === 'reduced'));
+    motionButton.disabled = false;
+    motionButton.setAttribute('aria-label', mode === 'full' ? 'Full motion. Switch to reduced motion' : 'Reduced motion. Switch to full motion');
+    motionButton.title = mode === 'full' ? 'Switch to reduced motion' : 'Switch to full motion';
   };
+  const defaultMotion = () => normaliseMotion(readPreference('maulik-motion')) || (motionMedia.matches ? 'reduced' : 'full');
   applyTheme(readPreference('maulik-theme') || (colorMedia.matches ? 'dark' : 'light'));
-  applyMotion(readPreference('maulik-motion') || 'on');
+  applyMotion(defaultMotion());
   themeButton.addEventListener('click', () => { const value = root.dataset.theme === 'dark' ? 'light' : 'dark'; writePreference('maulik-theme', value); applyTheme(value); });
-  motionButton.addEventListener('click', () => { const value = root.dataset.motion === 'off' ? 'on' : 'off'; writePreference('maulik-motion', value); applyMotion(value); });
+  motionButton.addEventListener('click', () => { const value = root.dataset.motion === 'full' ? 'reduced' : 'full'; writePreference('maulik-motion', value); applyMotion(value); });
   colorMedia.addEventListener('change', event => { if (!readPreference('maulik-theme')) applyTheme(event.matches ? 'dark' : 'light'); });
-  motionMedia.addEventListener('change', () => applyMotion(readPreference('maulik-motion') || 'on'));
+  motionMedia.addEventListener('change', () => applyMotion(defaultMotion()));
 
   document.querySelectorAll('.avatar-button').forEach(avatarButton => {
     let greetingTimeout;
@@ -103,7 +107,7 @@
   }
   document.querySelectorAll('.avatar-button').forEach(button => {
     button.addEventListener('pointermove', event => {
-      if (root.dataset.motion === 'off' || event.pointerType !== 'mouse') return;
+      if (root.dataset.motion !== 'full' || event.pointerType !== 'mouse') return;
       const box = button.getBoundingClientRect();
       button.style.setProperty('--portrait-tilt', `${((event.clientX - box.left) / box.width - .5) * 7}deg`);
     });
@@ -115,8 +119,8 @@
 (() => {
   'use strict';
   const root = document.documentElement;
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const motionOn = () => !reduced.matches && root.dataset.motion !== 'off';
+  // Heavy effects (drawing, typing, flipping, spinning, bursts, smooth scroll) run in Full motion only.
+  const motionOn = () => root.dataset.motion === 'full';
   const NS = 'http://www.w3.org/2000/svg';
   const svgPath = d => { const p = document.createElementNS(NS, 'path'); p.setAttribute('d', d); p.setAttribute('pathLength', '1'); return p; };
 
@@ -290,7 +294,12 @@
     // Tap: the line flips over like a card and comes back with a new one.
     let flipping = false;
     timeNote.addEventListener('click', () => {
-      if (!motionOn()) { render(true); return; }
+      if (!motionOn()) {
+        render(true);
+        timeText.classList.remove('note-change');
+        requestAnimationFrame(() => timeText.classList.add('note-change'));
+        return;
+      }
       if (flipping) return;
       flipping = true;
       timeNote.classList.remove('is-spinning');
@@ -319,8 +328,9 @@
   const drawDoodle = key => {
     if (!doodle || !doodles[key]) return;
     doodle.replaceChildren(...doodles[key].map(svgPath));
-    doodle.classList.remove('sketching');
-    if (motionOn()) { void doodle.getBoundingClientRect(); doodle.classList.add('sketching'); }
+    doodle.classList.remove('sketching', 'fading');
+    void doodle.getBoundingClientRect();
+    doodle.classList.add(motionOn() ? 'sketching' : 'fading');
   };
   const pressed = document.querySelector('[data-interest][aria-pressed="true"]');
   drawDoodle(pressed ? pressed.dataset.interest : 'exploring');
@@ -389,7 +399,21 @@
       index = index === 2 ? 0 : 2;
     };
     const step = () => {
-      if (!motionOn()) { index = 0; current = split(HANDLE); chars = current.length; deleting = true; paint(HANDLE, HANDLE); setTimeout(step, 1000); return; }
+      if (!motionOn()) {
+        // Reduced motion: the whole word fades out and the next one fades in.
+        mark.classList.add('is-fading');
+        setTimeout(() => {
+          advance();
+          current = split(sequence[index]);
+          chars = current.length;
+          deleting = true;
+          paint(sequence[index], sequence[index]);
+          mark.classList.remove('is-fading');
+          setTimeout(step, sequence[index] === SANSKRIT ? 4200 : 3400);
+        }, 380);
+        return;
+      }
+      mark.classList.remove('is-fading');
       const word = sequence[index];
       if (deleting) {
         chars--;
