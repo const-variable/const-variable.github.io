@@ -162,3 +162,6 @@ html[data-motion=off] .little-star,html[data-motion=off] .footer-flower,html[dat
 .sidebar .hello-bubble{right:-82px}
 @media(max-width:760px){.hero .mobile-avatar .hello-bubble{right:-118px}}
 .wordmark{color:var(--accent-ink)}
+.now-note .local-time{cursor:pointer;user-select:none}
+.now-note .local-time:hover .local-time-text{color:var(--body)}
+.local-time-text.note-change{animation:note-in .35s ease}

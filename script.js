@@ -149,37 +149,112 @@
     document.querySelectorAll('.section-heading').forEach(el => el.classList.add('draw-ready'));
   }
 
-  /* Local time in India, with a mood line and a tiny clock that keeps time. */
+  /* Local time: Maulik's clock in India, the visitor's own clock when it differs,
+     and a mood line for the time of day. Updates on the minute; click to shuffle. */
+  const timeNote = document.querySelector('.local-time');
   const timeText = document.querySelector('.local-time-text');
   const hourHand = document.querySelector('.clock-hand.hour');
   const minuteHand = document.querySelector('.clock-hand.minute');
-  const moods = [
-    [0, 'probably still debugging something. Or should be asleep.'],
-    [5, 'early start. Chai first, questions later.'],
-    [9, 'probably in class, or deep in a Jupyter notebook.'],
-    [13, 'post-lunch, mid-experiment.'],
-    [17, 'evening, so likely out exploring or on the bike.'],
-    [20, 'side-project hours.'],
-    [23, 'one more cell, then sleep. Probably.'],
-  ];
+  const HOME = 'Asia/Kolkata';
+  const moods = {
+    dawn: [
+      'early start. Chai first, questions later.',
+      'the sun’s up, and so am I. Technically.',
+      'morning walk, thinking in browser tabs.',
+    ],
+    morning: [
+      'probably in class, nodding along to eigenvectors.',
+      'fresh coffee, fresh bugs.',
+      'deep in a Jupyter notebook, somewhere around cell 47.',
+    ],
+    noon: [
+      'lunch. Possibly dal-tadka. Definitely more ghee than necessary.',
+      'midday, running on rice and optimism.',
+      'refuelling. The model can train without me for an hour.',
+    ],
+    afternoon: [
+      'post-lunch, mid-experiment.',
+      'fighting the afternoon slump with a second chai.',
+      'watching a loss curve like it’s the last over of a cricket match.',
+    ],
+    evening: [
+      'golden hour, so likely on the Trek chasing a sunset.',
+      'classes wrapping up, side projects opening.',
+      'evening walk. The best ideas show up without a laptop.',
+    ],
+    night: [
+      'side-project hours.',
+      'cooking chhole and debugging code, not necessarily in that order.',
+      'dark mode on, in the editor and in the sky.',
+    ],
+    late: [
+      'probably still debugging something. Or should be asleep.',
+      'one more cell, then sleep. Probably.',
+      'the house is quiet. The terminal isn’t.',
+      'asking the big questions. The small ones are in the error log.',
+    ],
+  };
+  const visitorNotes = {
+    late: ['You’re up late too, I see.', 'Night owls, both of us.'],
+    dawn: ['You’re up early. Respect.'],
+    morning: ['Good morning to you.'],
+    noon: ['Hope lunch was good.'],
+    afternoon: ['Hope your afternoon’s going well.'],
+    evening: ['Good evening to you.'],
+    night: ['Hope your evening was a good one.'],
+  };
+  const period = h => h < 5 ? 'late' : h < 8 ? 'dawn' : h < 12 ? 'morning' : h < 14 ? 'noon' : h < 17 ? 'afternoon' : h < 20 ? 'evening' : h < 23 ? 'night' : 'late';
+  const pick = list => list[Math.floor(Math.random() * list.length)];
+  const clockIn = (zone, now) => {
+    const parts = Object.fromEntries(new Intl.DateTimeFormat('en-GB', {timeZone: zone, hour: 'numeric', minute: 'numeric', hourCycle: 'h23'}).formatToParts(now).map(p => [p.type, p.value]));
+    return {h: Number(parts.hour), m: Number(parts.minute), label: now.toLocaleTimeString('en-US', {timeZone: zone, hour: 'numeric', minute: '2-digit'}).toLowerCase()};
+  };
+  let visitorZone = '';
+  try { visitorZone = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch { /* unknown zone */ }
+  const place = zone => zone.split('/').pop().replace(/_/g, ' ');
   const hand = (len, deg) => {
     const r = (deg - 90) * Math.PI / 180;
     return `M10 10L${(10 + Math.cos(r) * len).toFixed(2)} ${(10 + Math.sin(r) * len).toFixed(2)}`;
   };
-  const tick = () => {
+  let lastPeriod = '', mood = '', note = '';
+  const render = (shuffle = false) => {
     if (!timeText) return;
     const now = new Date();
-    const parts = Object.fromEntries(new Intl.DateTimeFormat('en-GB', {timeZone: 'Asia/Kolkata', hour: 'numeric', minute: 'numeric', hourCycle: 'h23'}).formatToParts(now).map(p => [p.type, p.value]));
-    const h = Number(parts.hour), m = Number(parts.minute);
-    const pretty = now.toLocaleTimeString('en-US', {timeZone: 'Asia/Kolkata', hour: 'numeric', minute: '2-digit'}).toLowerCase();
-    let mood = moods[0][1];
-    moods.forEach(([from, text]) => { if (h >= from) mood = text; });
-    timeText.textContent = `It’s ${pretty} here in India: ${mood}`;
-    hourHand.setAttribute('d', hand(3.8, (h % 12) * 30 + m / 2));
-    minuteHand.setAttribute('d', hand(5.6, m * 6));
+    const home = clockIn(HOME, now);
+    const homePeriod = period(home.h);
+    if (shuffle || homePeriod !== lastPeriod) {
+      const options = moods[homePeriod].filter(line => line !== mood);
+      mood = pick(options.length ? options : moods[homePeriod]);
+      lastPeriod = homePeriod;
+    }
+    let line;
+    const away = visitorZone && /\//.test(visitorZone) ? clockIn(visitorZone, now) : null;
+    if (!away || (away.h === home.h && away.m === home.m)) {
+      line = `It’s ${home.label} here in India: ${mood}`;
+    } else {
+      if (shuffle || !note) note = pick(visitorNotes[period(away.h)]);
+      line = `It’s ${away.label} in ${place(visitorZone)} and ${home.label} here in India: ${mood} ${note}`;
+    }
+    timeText.textContent = line;
+    hourHand.setAttribute('d', hand(3.8, (home.h % 12) * 30 + home.m / 2));
+    minuteHand.setAttribute('d', hand(5.6, home.m * 6));
   };
-  tick();
-  setInterval(tick, 20000);
+  const everyMinute = () => {
+    render();
+    setTimeout(everyMinute, 60000 - (Date.now() % 60000) + 50);
+  };
+  everyMinute();
+  if (timeNote) {
+    timeNote.setAttribute('title', 'Click for another one');
+    timeNote.setAttribute('role', 'button');
+    timeNote.tabIndex = 0;
+    timeNote.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); timeNote.click(); } });
+    timeNote.addEventListener('click', () => {
+      render(true);
+      timeText.classList.remove('note-change');
+      requestAnimationFrame(() => timeText.classList.add('note-change'));
+    });
+  }
 
   /* A small doodle for each interest. */
   const doodles = {
