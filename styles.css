@@ -410,3 +410,24 @@ html[data-motion=off] .social-icon:hover{transform:none}
   .social-icon::after,.social-icon:hover::after{opacity:1;top:calc(100% + 6px);bottom:auto;transform:translateX(-50%);background:none;border:0;padding:0;border-radius:0;font:9px/1 var(--mono);letter-spacing:.3px;color:var(--muted)}
 }
 main > section[tabindex="-1"]:focus{outline:none}
+
+/* ───────── v15: skills in the hero ───────── */
+/* Two short rows of plain tags, labelled like the rest of the site's small labels. */
+.hero-skills{display:grid;grid-column:1/-1;gap:10px;margin:24px 0 2px;padding:0}
+.hero-skills .skill-row{display:grid;grid-template-columns:104px minmax(0,1fr);align-items:baseline;gap:10px;min-width:0}
+.hero-skills .skill-label{font:9.5px/1.6 var(--mono);letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+.hero-skills .skill-row>dd{min-width:0;margin:0}
+.hero-skills .skill-list{display:flex;flex-wrap:wrap;gap:5px;margin:0;padding:0;list-style:none}
+/* Static tags: a soft fill and no border, so they don't read as buttons. */
+.hero-skills .skill-tag{padding:2px 8px;border-radius:4px;background:var(--surface);color:var(--body);font-size:11px;line-height:1.7;overflow-wrap:anywhere}
+.hero-skills .skill-row:last-child .skill-tag{background:var(--accent-wash);color:var(--accent-ink)}
+@media(max-width:600px){
+  .hero-skills{gap:12px;margin-top:20px}
+  .hero-skills .skill-row{grid-template-columns:minmax(0,1fr);gap:6px}
+  .hero-skills .skill-label{font-size:9px}
+}
+@media(prefers-reduced-motion:no-preference){
+  html[data-motion=on] .hero-skills .skill-row{animation:skill-row-enter .45s ease both;animation-delay:.12s}
+  html[data-motion=on] .hero-skills .skill-row:nth-child(2){animation-delay:.2s}
+}
+@keyframes skill-row-enter{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
