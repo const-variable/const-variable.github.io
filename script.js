@@ -228,14 +228,16 @@
       lastPeriod = homePeriod;
     }
     let line;
+    const esc = text => text.replace(/[&<>]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;'}[c]));
+    const blink = label => esc(label).replace(':', '<span class="tick-colon">:</span>');
     const away = visitorZone && /\//.test(visitorZone) ? clockIn(visitorZone, now) : null;
     if (!away || (away.h === home.h && away.m === home.m)) {
-      line = `It’s ${home.label} here in India: ${mood}`;
+      line = `It’s ${blink(home.label)} here in India: ${esc(mood)}`;
     } else {
       if (shuffle || !note) note = pick(visitorNotes[period(away.h)]);
-      line = `It’s ${away.label} in ${place(visitorZone)} and ${home.label} here in India: ${mood} ${note}`;
+      line = `It’s ${blink(away.label)} in ${esc(place(visitorZone))} and ${blink(home.label)} here in India: ${esc(mood)} ${esc(note)}`;
     }
-    timeText.textContent = line;
+    timeText.innerHTML = line;
     hourHand.setAttribute('d', hand(3.8, (home.h % 12) * 30 + home.m / 2));
     minuteHand.setAttribute('d', hand(5.6, home.m * 6));
   };
