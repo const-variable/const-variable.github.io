@@ -309,3 +309,12 @@ html[data-motion=off] .little-star,html[data-motion=off] .footer-flower,html[dat
 html[data-motion=off] .sidebar{transition:none}
 @media(max-width:760px){.sidebar{gap:6px}.sidebar-bottom .preferences{gap:18px}.navigation{margin-top:0;padding-bottom:8px}}
 @media(max-width:380px){.navigation{gap:2px 10px}.navigation a{font-size:10px}}
+
+/* ───────── v8: phone header, logo and toggles share one row ───────── */
+@media(max-width:760px){
+  .sidebar{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:12px;row-gap:8px}
+  .wordmark{grid-column:1;grid-row:1;justify-content:flex-start;justify-self:start;overflow:hidden}
+  .sidebar-bottom{grid-column:2;grid-row:1;justify-content:flex-end}
+  .sidebar-bottom .preferences{gap:12px}
+  .navigation{grid-column:1/-1;grid-row:2}
+}
