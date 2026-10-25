@@ -307,7 +307,7 @@
         const angle = (i / 7) * Math.PI * 2 + Math.random() * .4;
         const dist = 22 + Math.random() * 14;
         star.className = 'burst';
-        star.textContent = '✳';
+        star.textContent = '✳\uFE0E';
         star.setAttribute('aria-hidden', 'true');
         star.style.setProperty('--dx', `${Math.cos(angle) * dist}px`);
         star.style.setProperty('--dy', `${Math.sin(angle) * dist}px`);
