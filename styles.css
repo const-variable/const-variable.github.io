@@ -319,3 +319,4 @@ html[data-motion=off] .sidebar{transition:none}
   .navigation{grid-column:1/-1;grid-row:2}
 }
 @media(max-width:760px){.to-top{left:auto;right:calc(16px + env(safe-area-inset-right,0px))}}
+@media(max-width:760px){footer>a[href="#top"]{display:none}}
