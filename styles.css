@@ -167,3 +167,61 @@ html[data-motion=off] .little-star,html[data-motion=off] .footer-flower,html[dat
 .local-time-text.note-change{animation:note-in .35s ease}
 .tick-colon{animation:colon-blink 1s steps(1) infinite}
 @keyframes colon-blink{50%{opacity:0}}
+
+/* ───────── v4: centred mobile layout ───────── */
+@media(max-width:760px){
+  main,.sidebar{text-align:center}
+  /* Header: wordmark on top, controls under it, nav wraps instead of clipping. */
+  .sidebar{display:flex;flex-direction:column;align-items:center;gap:10px}
+  .wordmark{order:1;justify-content:center}
+  .sidebar-bottom{order:2;justify-content:center}
+  .navigation{order:3;width:100%;flex-wrap:wrap;justify-content:center;gap:4px 18px;margin-top:4px;overflow:visible}
+  .navigation a{min-height:36px}
+  /* Hero */
+  .hero .mobile-avatar{margin:0 auto 28px}
+  .eyebrow{justify-content:center}
+  .hero-description{margin-left:auto;margin-right:auto}
+  .hero-links{justify-content:center;flex-wrap:wrap}
+  .now-note{flex-direction:column;align-items:center;text-align:center;gap:8px}
+  .note-pin{margin-top:0}
+  .now-note .local-time{justify-content:center;text-align:left;max-width:320px;margin-left:auto;margin-right:auto}
+  /* Section headings stack: title, then its index. */
+  .section-heading,.previous-work-heading{flex-direction:column;align-items:center;gap:8px}
+  .section-lead{margin-left:auto;margin-right:auto}
+  /* Project cards */
+  .recent-project summary{position:relative;align-items:center}
+  .project-meta{justify-content:center}
+  .project-meta .expand-icon{position:absolute;right:16px;top:14px;margin:0}
+  /* Tekion work rows become small centred stacks. */
+  .work-item summary{flex-direction:column;justify-content:center;gap:8px;padding:22px 0 18px}
+  .work-title{align-items:center}
+  .work-item summary .expand-icon{margin:0;line-height:1}
+  .work-detail{padding:0 4px 22px}
+  .scribble-circle{left:-6px;width:calc(100% + 12px);top:-6px;height:calc(100% + 12px)}
+  .resume-link{justify-content:center}
+  /* Timeline: dots sit above centred labels. */
+  .journey>div{align-items:center;padding-right:0;padding-left:6px;padding-right:6px}
+  .journey-dot{left:50%;margin-left:-3.5px}
+  .journey-break .journey-dot{margin-left:-4.5px}
+  .off-duty-header{justify-content:center;gap:16px}
+  .interest-buttons{justify-content:center}
+  .interest-row{flex-direction:column;gap:8px}
+  /* Notebook card stacks its doodle above the text. */
+  .notebook-placeholder{flex-direction:column;text-align:center}
+  /* Contact */
+  .contact-section h2{margin-left:auto;margin-right:auto}
+  .email-row,.social-links{justify-content:center}
+  .contact-section .copy-status{text-align:center}
+  footer{flex-direction:column;gap:12px;padding-bottom:32px}
+  footer>span:nth-child(2),footer>span:nth-child(3){margin-left:0}
+  footer a{margin-left:0}
+}
+@media(max-width:760px){
+  .navigation{gap:2px 13px}
+  .navigation a{font-size:10.5px}
+  .now-note .local-time{display:block;text-align:center;max-width:none}
+  .now-note .local-time .clock-doodle{display:inline-block;vertical-align:-3px;margin-right:6px}
+  .scribble-circle{left:-2px;width:calc(100% + 4px)}
+  .contact-section h2{margin-top:52px}
+  .contact-section .contact-star{right:auto;left:calc(50% - 15px);top:-50px;font-size:38px;line-height:1}
+}
