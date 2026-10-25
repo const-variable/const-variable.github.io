@@ -42,7 +42,7 @@
 
   const interests = {
     exploring: 'A little less itinerary. A little more “what’s down that road?”',
-    bikes: 'Me, my Trek Marlin 7 mountain bike, and a trail. A very good reason to close the laptop.',
+    bikes: 'Me, my Trek Marlin 7 mountain bike and a trail. A very good reason to close the laptop.',
     photos: 'A small reminder to look a little closer at ordinary things.',
     cooking: 'Chhole and rice, or a dal-tadka loud enough to hear from the next room. Measurements are approximate. The ghee is not.',
     philosophy: 'Currently accepting questions that lead to even more questions.'
