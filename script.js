@@ -44,6 +44,7 @@
     exploring: 'A little less itinerary. A little more “what’s down that road?”',
     bikes: 'Me, my Trek Marlin 7 mountain bike, and a trail. A very good reason to close the laptop.',
     photos: 'A small reminder to look a little closer at ordinary things.',
+    cooking: 'Chhole and rice, or a dal-tadka loud enough to hear from the next room. Measurements are approximate. The ghee is not.',
     philosophy: 'Currently accepting questions that lead to even more questions.'
   };
   document.querySelectorAll('[data-interest]').forEach(button => button.addEventListener('click', () => {
@@ -184,6 +185,7 @@
   const doodles = {
     exploring: ['M3 37C16 37 13 25 26 24s14-14 26-15', 'M52 2a5 5 0 0 1 5 5c0 5-5 10-5 10s-5-5-5-10a5 5 0 0 1 5-5z', 'M52 7h.01'],
     bikes: ['M5 28a9 9 0 1 0 18 0a9 9 0 1 0-18 0', 'M41 28a9 9 0 1 0 18 0a9 9 0 1 0-18 0', 'M14 28 25 13h16l9 15M25 13l8 15 8-15M33 28H14', 'M21 9h8M41 13l3-6h5'],
+    cooking: ['M10 20h44v8c0 7-6 12-13 12H23c-7 0-13-5-13-12z', 'M4 22h6M54 22h6', 'M7 20h50', 'M24 14c-3-3 3-5 0-9', 'M32 14c-3-3 3-5 0-9', 'M40 14c-3-3 3-5 0-9'],
     photos: ['M8 13h12l4-6h16l4 6h12v25H8z', 'M24 25a8 8 0 1 0 16 0a8 8 0 1 0-16 0', 'M29 25a3 3 0 1 0 6 0a3 3 0 1 0-6 0', 'M50 18h3'],
     philosophy: ['M14 16c0-8 9-13 20-13s20 5 20 13-9 13-20 13c-4 0-7-1-10-2', 'M12 33a3 3 0 1 0 6 0a3 3 0 1 0-6 0', 'M5 39a1.6 1.6 0 1 0 3.2 0a1.6 1.6 0 1 0-3.2 0', 'M29 12c0-4 9-4 9 0 0 3-4 3-4 7', 'M34 23v.5'],
   };
