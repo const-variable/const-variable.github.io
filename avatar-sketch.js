@@ -61,7 +61,9 @@
         }, delay);
       };
       controllers.push({button, play, finish});
-      button.addEventListener('click', () => play(80));
+      // On phones a tap only says hello; the portrait doesn't redraw.
+      const touchOnly = window.matchMedia('(hover: none)');
+      button.addEventListener('click', () => { if (!button.classList.contains('mobile-avatar') && !touchOnly.matches) play(80); });
       button.addEventListener('avatar:replay', event => { event.stopPropagation(); play(0); });
       play(1600);
     });

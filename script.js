@@ -358,6 +358,41 @@
     setTimeout(step, 2400);
   }
 
+  /* Phones: the header slides away a beat after you start scrolling down and
+     comes back as soon as you scroll up. A back-to-top button floats bottom left. */
+  const header = document.querySelector('.sidebar');
+  const toTop = document.querySelector('.to-top');
+  const phone = window.matchMedia('(max-width: 760px)');
+  let lastY = window.scrollY, hideTimer = 0, ticking = false;
+  const showHeader = () => { clearTimeout(hideTimer); hideTimer = 0; header.classList.remove('is-tucked'); };
+  const onScroll = () => {
+    ticking = false;
+    const y = window.scrollY, delta = y - lastY;
+    lastY = y;
+    if (!phone.matches) { header.classList.remove('is-tucked', 'is-floating'); toTop.classList.remove('is-shown'); return; }
+    header.classList.toggle('is-floating', y > 8);
+    const showTop = y > window.innerHeight * 0.8;
+    toTop.classList.toggle('is-shown', showTop);
+    toTop.tabIndex = showTop ? 0 : -1;
+    if (y < 80 || delta < -3) { showHeader(); return; }
+    if (delta > 3 && !hideTimer && !header.classList.contains('is-tucked') && !header.contains(document.activeElement)) {
+      hideTimer = setTimeout(() => { header.classList.add('is-tucked'); hideTimer = 0; }, 450);
+    }
+  };
+  if (header && toTop) {
+    window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, {passive: true});
+    phone.addEventListener('change', onScroll);
+    header.addEventListener('focusin', showHeader);
+    toTop.addEventListener('click', event => {
+      event.preventDefault();
+      window.scrollTo({top: 0, behavior: motionOn() ? 'smooth' : 'auto'});
+      showHeader();
+      const mark = document.querySelector('.wordmark');
+      if (mark) mark.focus({preventScroll: true});
+    });
+    onScroll();
+  }
+
   try {
     console.log('%c✳ Hey, you found the console.', 'font: italic 15px Georgia, serif; color: #68724e');
     console.log('Curious how this was built? Say hello: maulikchaudhary5@gmail.com');
