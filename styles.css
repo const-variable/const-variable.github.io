@@ -440,3 +440,4 @@ html[data-motion=reduced] .interest-note.note-change,html[data-motion=reduced] .
 html[data-motion=reduced] .hero-skills .skill-row{animation:fade-only .5s ease .1s both!important}
 html[data-motion=reduced] .hero-skills .skill-row:nth-child(2){animation-delay:.2s!important}
 html[data-motion=reduced] .navigation a:hover,html[data-motion=reduced] .interest-buttons button:hover{transform:none}
+@media(min-width:761px){.sidebar .avatar-button{margin-left:auto;margin-right:auto}}
