@@ -257,3 +257,39 @@ html[data-motion=off] .little-star,html[data-motion=off] .footer-flower,html[dat
   .hero .now-note .note-pin{margin-top:6px}
   .hero .now-note .local-time{text-align:left}
 }
+
+/* ───────── v6: tap text, and no sticky hover on touch screens ───────── */
+.hello-bubble .bubble-text{font-style:italic;margin-left:0}
+.hello-bubble .bubble-star{margin-left:2px}
+.bubble-tap{display:none}
+.avatar-button.is-greeting .bubble-tap{display:inline}
+.avatar-button.is-greeting .bubble-hover{display:none}
+
+/* Phones keep :hover "stuck" after a tap. Undo hover-only effects there and
+   give taps a brief pressed state instead. */
+@media(hover:none){
+  .avatar-button:hover .avatar{transform:none}
+  .avatar-button:not(.is-greeting):hover .hello-bubble{opacity:0;transform:translateY(6px) rotate(-5deg)}
+  .avatar-button:active .avatar{transform:scale(.97)}
+  .contact-section:hover .contact-star{transform:none}
+  .copy-button:hover{background:none;color:var(--muted)}
+  .copy-button:active{background:var(--surface)}
+  .interest-buttons button:hover{transform:none}
+  .interest-buttons button:not([aria-pressed=true]):hover{color:var(--body)}
+  .interest-buttons button:active{transform:scale(.96)}
+  .navigation a:not(.active):hover{color:var(--body)}
+  .navigation a:hover{transform:none}
+  .notebook-placeholder:hover .notebook-doodle{transform:rotate(-7deg)}
+  .notebook-placeholder:hover .dots circle{fill:var(--paper);stroke:var(--muted)}
+  .recent-project:hover{background:none;border-color:var(--line);transform:none}
+  .recent-project[open]{border-color:var(--accent)}
+  .work-item summary:hover .work-icon{transform:none}
+  .work-item summary:hover .work-title strong{color:var(--ink)}
+  footer:hover .footer-flower{transform:none}
+  .quiet-link:hover{color:var(--body)}
+  .quiet-link:hover span,.text-link:hover span{transform:none}
+  .now-note .local-time:hover .local-time-text{color:var(--muted)}
+  .email-row>a:hover{border-color:var(--line)}
+  .social-links a:hover{color:var(--body);text-decoration:none}
+  .icon-button:hover,.motion-toggle:hover{color:var(--muted)}
+}

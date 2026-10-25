@@ -36,7 +36,7 @@
       clearTimeout(greetingTimeout);
       avatarButton.classList.add('is-greeting');
       document.querySelector('.greeting-status').textContent = 'Hey, thanks for stopping by!';
-      greetingTimeout = setTimeout(() => avatarButton.classList.remove('is-greeting'), 1800);
+      greetingTimeout = setTimeout(() => avatarButton.classList.remove('is-greeting'), 2600);
     });
   });
 
